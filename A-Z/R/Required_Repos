@@ -1,0 +1,13 @@
+Required Repos - Suggested in initial planning on 8th August 2025
+
+| Repo Name                          | Purpose                                               |
+|-----------------------------------|-------------------------------------------------------|
+| `cognito-learning-hub`            | 🔧 Main app (frontend + backend)                      |
+| `assignments-library`             | 📘 JSON/YAML structured assignments                   |
+| `blockly-engine`                  | ⚙️ Custom Blockly config, blocks, converters          |
+| `hub-docs`                        | 📚 Docs for devs, educators, contributors             |
+| `student-dashboard-ui` (optional) | 🎓 Separate frontend for student-only views           |
+| `plugins/roblox-sprint`           | 🕹️ Add-on scripts or Roblox snippets                 |
+| `infra-docker`                    | 🐳 Dev stack config, NGINX proxy, backups, deployment |
+| `demo-content`                    | 🎯 Sample lessons for showcase/testing                |
+| `cognito-utils`                   | 🔩 Internal helpers, conversion scripts, etc.         |

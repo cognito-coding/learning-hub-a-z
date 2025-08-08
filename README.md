@@ -17,11 +17,11 @@ Exploratory. Messy. Useful.
 | [B](./A-Z/B/README.md) | |
 | [C](./A-Z/C/README.md) | |
 | [D](./A-Z/D/README.md) | |
-| [E](./A-Z/E/README.md) | |
+| [E](./A-Z/E/README.md) |End of day docs |
 | [F](./A-Z/F/README.md) | |
 | [G](./A-Z/G/README.md) | |
 | [H](./A-Z/H/README.md) | |
-| [I](./A-Z/I/README.md) | |
+| [I](./A-Z/I/README.md) | Images|
 | [J](./A-Z/J/README.md) | |
 | [K](./A-Z/K/README.md) | |
 | [L](./A-Z/L/README.md) | |
@@ -30,7 +30,7 @@ Exploratory. Messy. Useful.
 | [O](./A-Z/O/README.md) | |
 | [P](./A-Z/P/README.md) | |
 | [Q](./A-Z/Q/README.md) | |
-| [R](./A-Z/R/README.md) | |
+| [R](./A-Z/R/README.md) | Repo List|
 | [S](./A-Z/S/README.md) | |
 | [T](./A-Z/T/README.md) | |
 | [U](./A-Z/U/README.md) | |

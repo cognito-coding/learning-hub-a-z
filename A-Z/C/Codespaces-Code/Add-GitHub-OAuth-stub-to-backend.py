@@ -20,9 +20,10 @@ def github_callback(code: str):
 
 ### Update backend/main.py to register the route:
 
+# at repo root in your Codespace
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routes import auth
+from backend.routes import auth, assignments
 
 app = FastAPI(title="Cognito Coding Learning Hub API")
 
@@ -34,8 +35,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Routers
 app.include_router(auth.router)
+app.include_router(assignments.router)
 
 @app.get("/ping")
 def ping():
     return {"status": "ok"}
+
+
+

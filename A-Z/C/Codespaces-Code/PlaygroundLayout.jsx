@@ -1,34 +1,17 @@
 import React from "react";
 
-/**
- * Pure layout. No Blockly or Pyodide here.
- * Exposes a ref slot (blocklyRef) where the caller mounts Blockly.
- */
 export default function PlaygroundLayout({
-  // brand
   brandOrange = "#FF7A00",
   // toolbar
-  lang,
-  setLang,
-  onGenerate,
-  onRun,
-  canRun,
-  runLabel = "Run",
-  onCopy,
-  onClearRun,
-  onClearWorkspace,
+  lang, setLang,
+  onGenerate, onRun, canRun, runLabel = "Run",
+  onCopy, onClearRun, onClearWorkspace,
   // panels
-  runOutput,
-  codeOutput,
-  // assignments sidebar
-  assignment,
-  category,
-  setCategory,
-  onPrev,
-  onNext,
-  canPrev,
-  canNext,
-  // blockly mount point
+  runOutput, codeOutput,
+  // assignments
+  assignment, category, setCategory,
+  onPrev, onNext, canPrev, canNext,
+  // blockly mount
   blocklyRef,
 }) {
   return (
@@ -44,33 +27,23 @@ export default function PlaygroundLayout({
         background: "#FFF7F0",
       }}
     >
-      {/* Header */}
       <header
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "8px 12px",
-          borderRadius: 8,
-          background: "#FFF0E3",
-          border: "1px solid #FFD8B5",
+          display: "flex", alignItems: "center", gap: 12,
+          padding: "8px 12px", borderRadius: 8,
+          background: "#FFF0E3", border: "1px solid #FFD8B5",
         }}
-        aria-label="Cognito header"
       >
         <div style={{ fontWeight: 800, fontSize: 18, letterSpacing: 0.3, color: brandOrange }}>
           Cognito Coding Learning Hub
         </div>
         <div style={{ marginLeft: "auto" }}>
-          <a
-            href="mailto:info@cognitocoding.com"
-            style={{ color: brandOrange, textDecoration: "none", fontWeight: 600 }}
-          >
+          <a href="mailto:info@cognitocoding.com" style={{ color: brandOrange, textDecoration: "none", fontWeight: 600 }}>
             info@cognitocoding.com
           </a>
         </div>
       </header>
 
-      {/* Toolbar */}
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <select value={lang} onChange={(e) => setLang(e.target.value)} style={{ padding: "8px 10px" }}>
           <option value="python">Python</option>
@@ -86,26 +59,16 @@ export default function PlaygroundLayout({
         <button onClick={onClearWorkspace} style={{ marginLeft: "auto" }}>Clear Workspace</button>
       </div>
 
-      {/* MAIN: Sidebar + Playground */}
       <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 8, minHeight: 0 }}>
-        {/* Sidebar */}
         <aside
           style={{
-            border: "1px solid #FFD8B5",
-            borderRadius: 8,
-            background: "#FFF0E3",
-            padding: 12,
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            overflow: "auto",
+            border: "1px solid #FFD8B5", borderRadius: 8, background: "#FFF0E3",
+            padding: 12, display: "flex", flexDirection: "column", gap: 10, overflow: "auto",
           }}
         >
           <div style={{ fontSize: 12, fontWeight: 700, color: "#9a5b00" }}>ASSIGNMENT</div>
           <div style={{ fontWeight: 800, lineHeight: 1.2 }}>{assignment?.title || "Untitled"}</div>
-          <div style={{ fontSize: 12, opacity: 0.8 }}>
-            {(assignment?.level || "—")} • {category}
-          </div>
+          <div style={{ fontSize: 12, opacity: 0.8 }}>{(assignment?.level || "—")} • {category}</div>
           <p style={{ margin: 0 }}>{assignment?.desc || "—"}</p>
 
           <label style={{ fontSize: 12, marginTop: 6 }}>Category</label>
@@ -121,27 +84,12 @@ export default function PlaygroundLayout({
           </div>
         </aside>
 
-        {/* Playground right: Blockly + Run panel */}
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 8, minHeight: 0 }}>
-          <div
-            ref={blocklyRef}
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "1px solid #e9c9a9",
-              borderRadius: 8,
-            }}
-          />
+          <div ref={blocklyRef} style={{ width: "100%", height: "100%", border: "1px solid #e9c9a9", borderRadius: 8 }} />
           <pre
             style={{
-              margin: 0,
-              padding: 10,
-              background: "#E6F4FF",
-              color: "#0b3a5b",
-              border: "1px solid #cfe8ff",
-              borderRadius: 8,
-              overflow: "auto",
-              whiteSpace: "pre-wrap",
+              margin: 0, padding: 10, background: "#E6F4FF", color: "#0b3a5b",
+              border: "1px solid #cfe8ff", borderRadius: 8, overflow: "auto", whiteSpace: "pre-wrap",
             }}
           >
             {runOutput}
@@ -149,16 +97,10 @@ export default function PlaygroundLayout({
         </div>
       </div>
 
-      {/* BOTTOM: Code output full width */}
       <pre
         style={{
-          margin: 0,
-          padding: 10,
-          background: "#1e1e1e",
-          color: "#d4d4d4",
-          borderRadius: 8,
-          overflow: "auto",
-          whiteSpace: "pre-wrap",
+          margin: 0, padding: 10, background: "#1e1e1e", color: "#d4d4d4",
+          borderRadius: 8, overflow: "auto", whiteSpace: "pre-wrap",
         }}
       >
         {codeOutput}
@@ -166,3 +108,4 @@ export default function PlaygroundLayout({
     </div>
   );
 }
+

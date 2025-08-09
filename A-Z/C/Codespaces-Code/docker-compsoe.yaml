@@ -1,0 +1,30 @@
+# stop any running servers (Ctrl+C in those terminals), then:
+cd /workspaces/cognito-coding-learning-hub
+
+cat > docker-compose.yml << 'YAML'
+services:
+  frontend:
+    image: node:20
+    working_dir: /app/frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+
+  backend:
+    image: python:3.12-slim
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: sh -c "pip install -r backend/requirements.txt && uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+YAML
+
+# bring both up
+docker compose up

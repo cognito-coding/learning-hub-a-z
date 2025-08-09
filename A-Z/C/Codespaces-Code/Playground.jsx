@@ -17,21 +17,22 @@ export default function Playground() {
   useEffect(() => {
     if (!blocklyDiv.current) return;
 
-    // Pastel theme (pale orange workspace)
+    // Brand palette
+    const brandOrange = "#FF7A00"; // brighter/darker orange
     const PastelTheme = Blockly.Theme.defineTheme("cognitoPastel", {
       base: Blockly.Themes.Classic,
       componentStyles: {
-        workspaceBackgroundColour: "#FFEBD6", // pale pastel orange
+        workspaceBackgroundColour: "#FFEBD6",
         toolboxBackgroundColour: "#FFF7F0",
         toolboxForegroundColour: "#334155",
         flyoutBackgroundColour: "#FFF7F0",
         flyoutOpacity: 0.98,
         scrollbarColour: "#c7c7c7",
-        insertionMarkerColour: "#60a5fa",
+        insertionMarkerColour: brandOrange,
         insertionMarkerOpacity: 0.6,
-        cursorColour: "#60a5fa",
-        markerColour: "#60a5fa",
-        selectedGlowColour: "#60a5fa",
+        cursorColour: brandOrange,
+        markerColour: brandOrange,
+        selectedGlowColour: brandOrange,
         selectedGlowSize: 2
       }
     });
@@ -97,7 +98,7 @@ export default function Playground() {
     if (lang === "lua")    code = Blockly.Lua.workspaceToCode(workspaceRef.current);
     if (lang === "js")     code = Blockly.JavaScript.workspaceToCode(workspaceRef.current);
 
-    // HTML/CSS stubs until we add real blocks/generators
+    // HTML/CSS stubs for now
     if (lang === "html") {
       code =
 `<!-- TODO: HTML generator -->
@@ -123,7 +124,6 @@ body {
   }
 
   function runCode() {
-    // For now we only plan to execute Python (Pyodide). Others will be no-op.
     if (lang !== "python") {
       setRunOutput(`// Run not available for '${lang}' yet`);
       return;
@@ -137,6 +137,8 @@ body {
   function clearRun() { setRunOutput("// Run output will appear here"); }
   function clearWorkspace() { workspaceRef.current?.clear(); }
 
+  const brandOrange = "#FF7A00";
+
   return (
     <div
       style={{
@@ -144,12 +146,38 @@ body {
         inset: 0,
         padding: 12,
         display: "grid",
-        gridTemplateRows: "auto 1fr 28vh", // toolbar, top row, code row
+        gridTemplateRows: "auto auto 1fr 28vh", // header, toolbar, top row, code row
         gap: 8,
         boxSizing: "border-box",
-        background: "#FFF7F0" // soft background around everything
+        background: "#FFF7F0"
       }}
     >
+      {/* Header */}
+      <header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "8px 12px",
+          borderRadius: 8,
+          background: "#FFF0E3",
+          border: "1px solid #FFD8B5"
+        }}
+        aria-label="Cognito header"
+      >
+        <div style={{ fontWeight: 800, fontSize: 18, letterSpacing: 0.3, color: brandOrange }}>
+          Cognito Coding Learning Hub
+        </div>
+        <div style={{ marginLeft: "auto" }}>
+          <a
+            href="mailto:info@cognitocoding.com"
+            style={{ color: brandOrange, textDecoration: "none", fontWeight: 600 }}
+          >
+            info@cognitocoding.com
+          </a>
+        </div>
+      </header>
+
       {/* Toolbar */}
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <select value={lang} onChange={(e) => setLang(e.target.value)} style={{ padding: "8px 10px" }}>
@@ -182,14 +210,13 @@ body {
             height: "100%",
             border: "1px solid #e9c9a9",
             borderRadius: 8,
-            // workspace fill is controlled by the theme (pale orange)
           }}
         />
         <pre
           style={{
             margin: 0,
             padding: 10,
-            background: "#E6F4FF",   // pastel light blue
+            background: "#E6F4FF",
             color: "#0b3a5b",
             border: "1px solid #cfe8ff",
             borderRadius: 8,
@@ -217,8 +244,6 @@ body {
       </pre>
     </div>
   );
-}
-
 }
 
 

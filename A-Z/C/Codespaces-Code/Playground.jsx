@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as Blockly from "blockly/core";
 import "blockly/blocks";
-import "blockly/javascript"; // (we’ll swap generators later as needed)
+import "blockly/javascript";
 
 export default function Playground() {
   const blocklyDiv = useRef(null);
@@ -9,6 +9,9 @@ export default function Playground() {
 
   useEffect(() => {
     if (!blocklyDiv.current) return;
+
+    console.log("Playground mount, div size:",
+      blocklyDiv.current.clientWidth, "x", blocklyDiv.current.clientHeight);
 
     const toolboxXml = `
       <xml id="toolbox" style="display: none">
@@ -27,7 +30,11 @@ export default function Playground() {
     workspaceRef.current = Blockly.inject(blocklyDiv.current, {
       toolbox,
       trashcan: true,
+      grid: { spacing: 20, length: 3, snap: true }, // should show a grid
+      zoom: { controls: true, wheel: true }
     });
+
+    console.log("Workspace created:", !!workspaceRef.current);
 
     return () => {
       if (workspaceRef.current) {
@@ -37,5 +44,16 @@ export default function Playground() {
     };
   }, []);
 
-  return <div ref={blocklyDiv} style={{ height: "100vh", width: "100%" }} />;
+  // Add strong visual styles so we can see the container for sure
+return (
+  <div
+    ref={blocklyDiv}
+    style={{
+      position: "fixed",  // ignore parent sizing
+      inset: 0,           // top/right/bottom/left = 0
+      overflow: "hidden"
+    }}
+  />
+);
+
 }

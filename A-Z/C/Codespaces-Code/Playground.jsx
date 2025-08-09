@@ -1,3 +1,4 @@
+
 // src/Playground.jsx
 import React, { useEffect, useRef, useState } from "react";
 import * as Blockly from "blockly";
@@ -10,15 +11,15 @@ export default function Playground() {
   const blocklyDiv = useRef(null);
   const workspaceRef = useRef(null);
 
-  const [lang, setLang] = useState("python"); // python | lua | js | html | css
+  const [lang, setLang] = useState("python");
   const [codeOutput, setCodeOutput] = useState("// Generated code will appear here");
   const [runOutput, setRunOutput] = useState("// Run output will appear here");
 
   useEffect(() => {
     if (!blocklyDiv.current) return;
 
-    // Brand palette
-    const brandOrange = "#FF7A00"; // brighter/darker orange
+    const brandOrange = "#FF7A00";
+
     const PastelTheme = Blockly.Theme.defineTheme("cognitoPastel", {
       base: Blockly.Themes.Classic,
       componentStyles: {
@@ -38,19 +39,99 @@ export default function Playground() {
     });
 
     const toolboxXml = `
-      <xml id="toolbox">
+      <xml id="toolbox" style="display: none">
         <category name="Logic" categorystyle="logic_category">
           <block type="controls_if"></block>
           <block type="logic_compare"></block>
+          <block type="logic_operation"></block>
+          <block type="logic_negate"></block>
+          <block type="logic_boolean"></block>
+          <block type="logic_null"></block>
+          <block type="logic_ternary"></block>
+        </category>
+        <category name="Loops" categorystyle="loop_category">
+          <block type="controls_repeat_ext">
+            <value name="TIMES"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+          </block>
+          <block type="controls_whileUntil"></block>
+          <block type="controls_for">
+            <value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+            <value name="TO"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+            <value name="BY"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+          </block>
+          <block type="controls_forEach"></block>
+          <block type="controls_flow_statements"></block>
         </category>
         <category name="Math" categorystyle="math_category">
           <block type="math_number"><field name="NUM">0</field></block>
           <block type="math_arithmetic"></block>
+          <block type="math_single"></block>
+          <block type="math_trig"></block>
+          <block type="math_constant"></block>
+          <block type="math_number_property"></block>
+          <block type="math_round"></block>
+          <block type="math_on_list"></block>
+          <block type="math_modulo"></block>
+          <block type="math_constrain"></block>
+          <block type="math_random_int"></block>
+          <block type="math_random_float"></block>
+          <block type="math_atan2"></block>
         </category>
         <category name="Text" categorystyle="text_category">
-          <block type="text_print"></block>
           <block type="text"></block>
+          <block type="text_join"></block>
+          <block type="text_append">
+            <value name="TEXT"><shadow type="text"></shadow></value>
+          </block>
+          <block type="text_length"></block>
+          <block type="text_isEmpty"></block>
+          <block type="text_indexOf">
+            <value name="VALUE"><block type="variables_get"><field name="VAR">text</field></block></value>
+          </block>
+          <block type="text_charAt">
+            <value name="VALUE"><block type="variables_get"><field name="VAR">text</field></block></value>
+          </block>
+          <block type="text_getSubstring">
+            <value name="STRING"><block type="variables_get"><field name="VAR">text</field></block></value>
+          </block>
+          <block type="text_changeCase"></block>
+          <block type="text_trim"></block>
+          <block type="text_print"></block>
+          <block type="text_prompt_ext"></block>
         </category>
+        <category name="Lists" categorystyle="list_category">
+          <block type="lists_create_empty"></block>
+          <block type="lists_create_with"></block>
+          <block type="lists_repeat">
+            <value name="NUM"><shadow type="math_number"><field name="NUM">5</field></shadow></value>
+          </block>
+          <block type="lists_length"></block>
+          <block type="lists_isEmpty"></block>
+          <block type="lists_indexOf">
+            <value name="VALUE"><block type="variables_get"><field name="VAR">list</field></block></value>
+          </block>
+          <block type="lists_getIndex">
+            <value name="VALUE"><block type="variables_get"><field name="VAR">list</field></block></value>
+          </block>
+          <block type="lists_setIndex">
+            <value name="LIST"><block type="variables_get"><field name="VAR">list</field></block></value>
+          </block>
+          <block type="lists_getSublist">
+            <value name="LIST"><block type="variables_get"><field name="VAR">list</field></block></value>
+          </block>
+          <block type="lists_sort"></block>
+          <block type="lists_split"></block>
+          <block type="lists_reverse"></block>
+        </category>
+        <category name="Colour" categorystyle="colour_category">
+          <block type="colour_picker"></block>
+          <block type="colour_random"></block>
+          <block type="colour_rgb"></block>
+          <block type="colour_blend"></block>
+        </category>
+        <sep></sep>
+        <category name="Variables" categorystyle="variable_category" custom="VARIABLE"></category>
+        <category name="Functions" categorystyle="procedure_category" custom="PROCEDURE"></category>
       </xml>
     `;
 
@@ -64,7 +145,7 @@ export default function Playground() {
     });
     workspaceRef.current = ws;
 
-    // starter block
+    // Starter block
     const startXml = `
       <xml xmlns="https://developers.google.com/blockly/xml">
         <block type="text_print" x="40" y="40">
@@ -76,7 +157,7 @@ export default function Playground() {
     `;
     Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(startXml), ws);
 
-    // resize handling
+    // Resize handling
     const resize = () => Blockly.svgResize(ws);
     requestAnimationFrame(resize);
     window.addEventListener("resize", resize);
@@ -98,7 +179,6 @@ export default function Playground() {
     if (lang === "lua")    code = Blockly.Lua.workspaceToCode(workspaceRef.current);
     if (lang === "js")     code = Blockly.JavaScript.workspaceToCode(workspaceRef.current);
 
-    // HTML/CSS stubs for now
     if (lang === "html") {
       code =
 `<!-- TODO: HTML generator -->
@@ -146,7 +226,7 @@ body {
         inset: 0,
         padding: 12,
         display: "grid",
-        gridTemplateRows: "auto auto 1fr 28vh", // header, toolbar, top row, code row
+        gridTemplateRows: "auto auto 1fr 28vh",
         gap: 8,
         boxSizing: "border-box",
         background: "#FFF7F0"
@@ -194,7 +274,7 @@ body {
         <button onClick={clearWorkspace} style={{ marginLeft: "auto" }}>Clear Workspace</button>
       </div>
 
-      {/* TOP ROW: Blockly (left) + Run output (right) */}
+      {/* TOP ROW */}
       <div
         style={{
           display: "grid",
@@ -228,7 +308,7 @@ body {
         </pre>
       </div>
 
-      {/* BOTTOM ROW: Code output full width */}
+      {/* BOTTOM ROW */}
       <pre
         style={{
           margin: 0,

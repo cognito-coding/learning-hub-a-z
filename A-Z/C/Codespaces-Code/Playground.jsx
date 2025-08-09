@@ -1,44 +1,41 @@
+// src/Playground.jsx
 import React, { useEffect, useRef, useState } from "react";
 import * as Blockly from "blockly";
 import "blockly/blocks";
-import "blockly/python";
-import "blockly/lua";
-import "blockly/javascript";
 
-import PlaygroundLayout from "./playground/PlaygroundLayout";
+import PlaygroundLayout from "./PlaygroundLayout";
 import {
   createCognitoTheme,
   getToolboxXml,
   computeGenReady,
   generateFromWorkspace,
-  loadPyodideRuntime,
-  runPython,
-} from "./playground/PlaygroundTools";
+} from "./PlaygroundTools";
+import { loadPyodideRuntime, runPython } from "./pyodideRuntime";
 
 export default function Playground() {
   const blocklyDiv = useRef(null);
   const workspaceRef = useRef(null);
   const pyodideRef = useRef(null);
 
-  // UI state
   const [lang, setLang] = useState("python");
   const [codeOutput, setCodeOutput] = useState("// Generated code will appear here");
   const [runOutput, setRunOutput] = useState("// Run output will appear here");
+
+  // runtime + gating
   const [pyStatus, setPyStatus] = useState("idle"); // idle | loading | ready | error
   const [isRunning, setIsRunning] = useState(false);
   const [genReady, setGenReady] = useState({ python: false, lua: false, js: false });
 
-  // Sidebar (stub data)
+  // Sidebar stub
   const assignments = [
     { id: "ap-hello", title: "Hello World (Python)", level: "Beginner", desc: "Use a print block to say hello." },
     { id: "ap-vars",  title: "Variables + Print",     level: "Beginner", desc: "Create a variable and print it." },
-    { id: "al-print", title: "Printing in Lua",       level: "Beginner", desc: "Use print() in Lua." },
   ];
   const [category, setCategory] = useState("Intro to Python");
   const [currentIndex, setCurrentIndex] = useState(0);
   const current = assignments[currentIndex];
 
-  // Mount: inject Blockly + listeners + load Pyodide
+  // Mount: inject Blockly and load Pyodide (no auto-generate, no auto-run)
   useEffect(() => {
     if (!blocklyDiv.current) return;
 
@@ -55,7 +52,7 @@ export default function Playground() {
     });
     workspaceRef.current = ws;
 
-    // Seed starter block
+    // Starter block
     const startXml = `
       <xml xmlns="https://developers.google.com/blockly/xml">
         <block type="text_print" x="40" y="40">
@@ -66,21 +63,16 @@ export default function Playground() {
       </xml>`;
     Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(startXml), ws);
 
-    // Generators availability (once)
     setGenReady(computeGenReady());
 
-    // Auto-generate code on any change
-    const onChange = () => setCodeOutput(generateFromWorkspace(ws, lang) || "// (empty)");
-    ws.addChangeListener(onChange);
-
-    // Resize handling
+    // Resize only
     const resize = () => Blockly.svgResize(ws);
     requestAnimationFrame(resize);
     window.addEventListener("resize", resize);
     const ro = new ResizeObserver(resize);
     ro.observe(blocklyDiv.current);
 
-    // Load Pyodide (Python 3)
+    // Load Pyodide
     setPyStatus("loading");
     loadPyodideRuntime()
       .then((py) => {
@@ -94,26 +86,24 @@ export default function Playground() {
       });
 
     return () => {
-      ws.removeChangeListener(onChange);
       window.removeEventListener("resize", resize);
       ro.disconnect();
       ws.dispose();
     };
   }, []);
 
-  // Re-generate when language changes
+  // If language changes we only update generator availability
   useEffect(() => {
-    const ws = workspaceRef.current;
-    if (!ws) return;
     setGenReady(computeGenReady());
-    setCodeOutput(generateFromWorkspace(ws, lang) || "// (empty)");
   }, [lang]);
 
-  // Actions
+  // Toolbar actions
   function manualGenerate() {
     const ws = workspaceRef.current;
     if (!ws) return;
-    setCodeOutput(generateFromWorkspace(ws, lang) || "// (empty)");
+    setGenReady(computeGenReady());
+    const code = generateFromWorkspace(ws, lang);
+    setCodeOutput(code ? code : "// (empty)");
   }
 
   async function handleRun() {
@@ -122,29 +112,19 @@ export default function Playground() {
       return;
     }
     const ws = workspaceRef.current;
-    if (!ws) {
-      setRunOutput("// Workspace not ready");
-      return;
-    }
-    if (!genReady.python) {
-      setRunOutput("// Python generator not available yet");
-      return;
-    }
+    if (!ws) { setRunOutput("// Workspace not ready"); return; }
+    if (!genReady.python) { setRunOutput("// Python generator not available"); return; }
     if (pyStatus !== "ready" || !pyodideRef.current) {
       setRunOutput(pyStatus === "loading" ? "// Python runtime loading..." : "// Python runtime not ready");
       return;
     }
     if (isRunning) return;
 
-    const code = generateFromWorkspace(ws, "python").trim();
-    if (!code || code.startsWith("//")) {
-      setRunOutput("// Nothing runnable yet (no Python code)");
-      return;
-    }
+    const code = (generateFromWorkspace(ws, "python") || "").trim();
+    if (!code || code.startsWith("//")) { setRunOutput("// Nothing runnable yet (no Python code)"); return; }
 
     setIsRunning(true);
     setRunOutput("▶ Running…");
-    // Yield to paint then execute
     setTimeout(async () => {
       try {
         const out = await runPython(pyodideRef.current, code, 4000);
@@ -159,27 +139,16 @@ export default function Playground() {
     }, 0);
   }
 
-  const canRun =
-    lang === "python" &&
-    pyStatus === "ready" &&
-    genReady.python &&
-    !isRunning;
+  const canRun = (lang === "python" && pyStatus === "ready" && genReady.python && !isRunning);
 
-  function copyCode() {
-    navigator.clipboard.writeText(codeOutput || "");
-  }
-  function clearRun() {
-    setRunOutput("// Run output will appear here");
-  }
-  function clearWorkspace() {
-    workspaceRef.current?.clear();
-  }
+  function copyCode() { navigator.clipboard.writeText(codeOutput || ""); }
+  function clearRun() { setRunOutput("// Run output will appear here"); }
+  function clearWorkspace() { workspaceRef.current?.clear(); }
 
   return (
     <PlaygroundLayout
       // toolbar
-      lang={lang}
-      setLang={setLang}
+      lang={lang} setLang={setLang}
       onGenerate={manualGenerate}
       onRun={handleRun}
       canRun={canRun}

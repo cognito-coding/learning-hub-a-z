@@ -14,7 +14,7 @@ Exploratory. Messy. Useful.
 | Letter | Topics |
 |--------|--------|
 | [A](./A-Z/A/README.md) | |
-| [B](./A-Z/B/README.md) | |
+| [B](./A-Z/B/README.md) |Blocky Integration |
 | [C](./A-Z/C/README.md) | |
 | [D](./A-Z/D/README.md) | |
 | [E](./A-Z/E/README.md) |End of day docs |

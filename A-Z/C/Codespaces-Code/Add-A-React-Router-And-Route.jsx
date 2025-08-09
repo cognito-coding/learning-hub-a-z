@@ -1,3 +1,5 @@
+#Edit src/main.jsx to this:
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -15,3 +17,17 @@ createRoot(document.getElementById("root")).render(
     <RouterProvider router={router} />
   </StrictMode>
 );
+
+Then replace src/App.jsx with:
+
+#import { Link } from "react-router-dom";
+
+export default function App() {
+  return (
+    <div style={{ padding: 24 }}>
+      <h1>Cognito Coding Learning Hub</h1>
+      <p>Day 2 — base scaffold.</p>
+      <p><Link to="/playground">Open Blockly Playground →</Link></p>
+    </div>
+  );
+}

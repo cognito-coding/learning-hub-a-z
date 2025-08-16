@@ -2,5 +2,6 @@
 
 ## 🧰 Tools
 
-[Assignment Schema](./Assignment-Schema.md)
+[Assignment Schema](./Assignments-Schema.md)
+[Assignments](./Assignments.md)
 - *(Add relevant tools or notes for 'B' here)*

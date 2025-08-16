@@ -2,5 +2,7 @@
 
 ## 🧰 Tools
 
-[FastAPI](./FastAPI.md)
+[FastAPI](./FastAPI.md)  
+[Frontend Launch](./Frontend_launch)
+
 - *(Add relevant tools or notes for 'F' here)*

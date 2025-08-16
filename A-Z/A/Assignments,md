@@ -1,0 +1,25 @@
+# Assignments
+
+## Structure
+- Central assignment **bank** (all lessons, stored in backend).
+- Students only see assignments **they are assigned**.
+- Assignments displayed in dashboard with:
+  - Title
+  - Description
+  - Language
+  - Level
+  - Category
+
+## Pop-Out View
+- Assignment opens in **sidebar/pop-out** alongside Playground.
+- Allows student to read while coding.
+
+## API
+- `GET /categories` → ["Intro to Python", "Roblox Lua Basics", ...]
+- `GET /assignments?category=...`
+  → `[ { id, title, level, language, desc, category } ]`
+
+## GitHub Export
+- Submit button pushes code to:
+  `/cognito-assignments/<assignmentId>.<ext>`
+- Export requires GitHub login.
